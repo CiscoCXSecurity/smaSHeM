@@ -1,0 +1,8 @@
+To install:
+
+1) ./configure
+2) make
+3) make install
+
+The latest version of smashem can always be found at
+<http://www.nth-dimension.org.uk/>.
