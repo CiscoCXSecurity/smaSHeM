@@ -1,1 +1,1 @@
-man_MAN = smaSHeM.1
+man_MANS = smaSHeM.1
