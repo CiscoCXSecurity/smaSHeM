@@ -8,6 +8,7 @@
 * Removed duplicate header checks in configure
 * Fixed Makefile
 * Ran autoreconf --force --install
+* Added man/Makefile.in
 
 0.1 - 0.2
 

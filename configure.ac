@@ -3,8 +3,8 @@
 
 AC_PREREQ([2.69])
 AC_INIT([smaSHeM], [0.3.9], [timb@nth-dimension.org.uk])
-AM_INIT_AUTOMAKE(smaSHeM, 0.3.9)
 AC_CONFIG_SRCDIR([src/smaSHeM.h])
+AM_INIT_AUTOMAKE
 
 # Checks for programs.
 AC_PROG_CXXCPP
