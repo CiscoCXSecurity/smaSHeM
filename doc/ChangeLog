@@ -13,6 +13,7 @@
 * Added -v option to smaSHeM.c to display version and updated man/smaSHeM.1 man
   page to reflect this
 
+
 0.1 - 0.2
 
 * Fixed minor bug in distclean target of Makefile
