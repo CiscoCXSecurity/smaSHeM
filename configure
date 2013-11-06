@@ -1746,6 +1746,73 @@ fi
   as_fn_set_status $ac_retval
 
 } # ac_fn_cxx_try_link
+
+# ac_fn_cxx_check_func LINENO FUNC VAR
+# ------------------------------------
+# Tests whether FUNC exists, setting the cache variable VAR accordingly
+ac_fn_cxx_check_func ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
+$as_echo_n "checking for $2... " >&6; }
+if eval \${$3+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+/* Define $2 to an innocuous variant, in case <limits.h> declares $2.
+   For example, HP-UX 11i <limits.h> declares gettimeofday.  */
+#define $2 innocuous_$2
+
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char $2 (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+
+#undef $2
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char $2 ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined __stub_$2 || defined __stub___$2
+choke me
+#endif
+
+int
+main ()
+{
+return $2 ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  eval "$3=yes"
+else
+  eval "$3=no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+fi
+eval ac_res=\$$3
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+
+} # ac_fn_cxx_check_func
 cat >config.log <<_ACEOF
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
@@ -4457,41 +4524,37 @@ fi
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for error_at_line" >&5
-$as_echo_n "checking for error_at_line... " >&6; }
-if ${ac_cv_lib_error_at_line+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <error.h>
-int
-main ()
-{
-error_at_line (0, 0, "", 0, "an error occurred");
-  ;
-  return 0;
-}
+for ac_func in fprintf exit perror getopt atoi strlen shmat shmdt printf
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_cxx_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
 _ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_error_at_line=yes
+
 else
-  ac_cv_lib_error_at_line=no
+  as_fn_error $? "required standard library function missing" "$LINENO" 5
 fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
+done
+
+if test "x$with_qtgui" = "xyes"; then
+  # only useful if we have QtGui
+  for ac_func in malloc memset sprintf free
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_cxx_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+else
+  as_fn_error $? "optional but requested standard library function missing" "$LINENO" 5
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_error_at_line" >&5
-$as_echo "$ac_cv_lib_error_at_line" >&6; }
-if test $ac_cv_lib_error_at_line = no; then
-  case " $LIBOBJS " in
-  *" error.$ac_objext "* ) ;;
-  *) LIBOBJS="$LIBOBJS error.$ac_objext"
- ;;
-esac
+done
 
 fi
-
 
 ac_config_files="$ac_config_files Makefile src/Makefile doc/Makefile"
 
