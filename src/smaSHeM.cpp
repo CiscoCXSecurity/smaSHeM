@@ -1,5 +1,5 @@
 /*
-$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.1 2013-11-06 10:59:14 timb Exp $
+$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.2 2013-11-06 15:18:13 timb Exp $
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,11 +23,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "smaSHeM.h"
 
 void usage(char *commandname) {
-	/* TODO enable -a */
 	if (commandname != (char *) NULL) {
-		fprintf(stderr, "usage: %s -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P]>\n", commandname);
+		fprintf(stderr, "usage: %s -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P | -j -x <xstart> -X <endx> -y <starty> -Y <yend>]>\n", commandname);
 	} else {
-		fprintf(stderr, "usage: (null) -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P]>\n");
+		fprintf(stderr, "usage: (null) -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P | -j -x <xstart> -X <endx> -y <starty> -Y <yend>]>\n");
 	}
 	exit(EXIT_FAILURE);
 }
@@ -57,13 +56,23 @@ int main(int argc, char **argv) {
 	int perlflag;
 	int cflag;
 	int prettyflag;
+	int jpegflag;
+	int xstart;
+	int xend;
+	int ystart;
+	int yend;
 	void *shmembuffer;
 	int patchcounter;
 	int displaycounter;
-	int blockflag;
-	int blockstart;
-	int blockend;
 	char prettybuffer[PRETTYLINELENGTH + 1];
+	int xcounter;
+	int ycounter;
+	int processid;
+	int processstatus;
+#ifdef WITH_QTGUI
+	QImage *qimage;
+#endif
+	char *filename;
 	optionflag = -1;
 	shmemid = -1;
 	shmemlength = 0;
@@ -73,14 +82,24 @@ int main(int argc, char **argv) {
 	perlflag = FALSE;
 	cflag = FALSE;
 	prettyflag = FALSE;
+	jpegflag = FALSE;
+	xstart = 0;
+	xend = 2000;
+	ystart = 0;
+	yend = 30;
 	shmembuffer = (void *) -1;
 	patchcounter = 0;
 	displaycounter = 0;
-	blockflag = FALSE;
-	blockstart = 0;
-	blockend = 0;
 	prettybuffer[PRETTYLINELENGTH] = (char) '\x00';
-	while ((optionflag = getopt(argc, argv, "i:l:@:s:dpcP")) != -1) {
+	xcounter = 0;
+	ycounter = 0;
+	processid = -1;
+	processstatus = 0;
+#ifdef WITH_QTGUI
+	qimage = NULL;
+#endif
+	filename = (char *) NULL;
+	while ((optionflag = getopt(argc, argv, "i:l:@:s:dpcPjx:X:y:Y:")) != -1) {
 		switch (optionflag) {
 			case 'i':
 				shmemid = atoi(optarg);
@@ -105,6 +124,21 @@ int main(int argc, char **argv) {
 				break;
 			case 'P':
 				prettyflag = TRUE;
+				break;
+			case 'j':
+				jpegflag = TRUE;
+				break;
+			case 'x':
+				xstart = atoi(optarg);
+				break;
+			case 'X':
+				xend = atoi(optarg);
+				break;
+			case 'y':
+				ystart = atoi(optarg);
+				break;
+			case 'Y':
+				yend = atoi(optarg);
 				break;
 			default:
 				error(argv[0], (char *) NULL);
@@ -132,37 +166,67 @@ int main(int argc, char **argv) {
 				if (displayflag == TRUE) {
 					if (shmemlength >= 0) { 
 						if ((shmembuffer = (void *) shmat(shmemid, (void *) NULL, SHM_RND | SHM_RDONLY)) != (void *) -1) {
-							for (displaycounter = 0; displaycounter < shmemlength; displaycounter ++) {
-								if (perlflag == TRUE) {
-									printf("\\x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
-								} else {
-									if (cflag == TRUE) {
-										printf("0x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
-										if ((displaycounter + 1) < shmemlength) {
-											printf(",");
-										}
+							if (jpegflag != TRUE) {
+								for (displaycounter = 0; displaycounter < shmemlength; displaycounter ++) {
+									if (perlflag == TRUE) {
+										printf("\\x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
 									} else {
-										if (prettyflag == TRUE) {
-											if ((displaycounter % PRETTYLINELENGTH) == 0) {
-												printf("0x%08x\t", shmembuffer + displaycounter);
-											}
-											if ((displaycounter % PRETTYLINELENGTH) > 0) {
-												printf(" ");
-											}
-											if (isalnum((unsigned char) *((char *) (shmembuffer + displaycounter)))) {
-												prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) (shmembuffer + displaycounter));
-											} else {
-												prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) '.';
-											}
-											printf("%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
-											if ((displaycounter % PRETTYLINELENGTH) == (PRETTYLINELENGTH - 1)) {
-												printf("\t%s\n", prettybuffer);
+										if (cflag == TRUE) {
+											printf("0x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+											if ((displaycounter + 1) < shmemlength) {
+												printf(",");
 											}
 										} else {
-											printf("%c", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+											if (prettyflag == TRUE) {
+												if ((displaycounter % PRETTYLINELENGTH) == 0) {
+													printf("0x%08x\t", shmembuffer + displaycounter);
+												}
+												if ((displaycounter % PRETTYLINELENGTH) > 0) {
+													printf(" ");
+												}
+												if (isalnum((unsigned char) *((char *) (shmembuffer + displaycounter)))) {
+													prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) (shmembuffer + displaycounter));
+												} else {
+													prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) '.';
+												}
+												printf("%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+												if ((displaycounter % PRETTYLINELENGTH) == (PRETTYLINELENGTH - 1)) {
+													printf("\t%s\n", prettybuffer);
+												}
+											} else {
+												printf("%c", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+											}
 										}
 									}
 								}
+							} else {
+#ifdef WITH_QTGUI
+								if ((xend >= xstart) && (yend >= ystart)) {
+									for (xcounter = xstart; xcounter <= xend; xcounter ++) {
+										for (ycounter = ystart; ycounter <= yend; ycounter ++) {
+											/* we fork here because we have no idea what the correct dimensions of the image actually are */
+											if (processid = fork() == 0) {
+												printf("%ix%i", xcounter, ycounter);
+												qimage = new QImage((unsigned char *) shmembuffer, xcounter, ycounter, QImage::Format_RGB32);
+												filename = (char *) malloc(4 + 1 + 4 + 4 + 1);
+												memset(filename, 0, 4 + 1 + 4 + 4 + 1);
+												sprintf(filename, "%i-%i.jpeg", xcounter, ycounter);
+												qimage->save(filename, 0, 100);
+												free(filename);
+												delete qimage;
+												printf(" [done]\n");
+												exit(EXIT_SUCCESS);
+											} else {
+												waitpid(processid, &processstatus, 0);
+											}
+										}
+									}
+								} else {
+									error(argv[0], "dimensions make no sense");
+								}
+#else
+								error(argv[0], "not compiled with --enable-qtgui");
+#endif
 							}
 							shmdt(shmembuffer);
 						} else {

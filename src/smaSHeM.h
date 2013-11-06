@@ -1,5 +1,5 @@
 /*
-$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.h,v 1.2 2013-01-02 09:26:06 timb Exp $
+$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.h,v 1.3 2013-11-06 15:18:13 timb Exp $
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,8 +33,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <sys/shm.h>
 #include <ctype.h>
 
+#ifdef WITH_QTGUI
+
+#include <Qt/qimage.h>
+#include <sys/wait.h>
+
+#else
+
+// Qt comes with true and false
 #define TRUE 1
 #define FALSE 0
+
+#endif
+
 #define PRETTYLINELENGTH 8
 
 int main(int argc, char **argv);

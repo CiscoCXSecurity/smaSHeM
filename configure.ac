@@ -2,8 +2,8 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([smaSHeM], [0.3], [timb@nth-dimension.org.uk])
-AM_INIT_AUTOMAKE(smaSHeM, 0.3)
+AC_INIT([smaSHeM], [0.3.9], [timb@nth-dimension.org.uk])
+AM_INIT_AUTOMAKE(smaSHeM, 0.3.9)
 AC_CONFIG_SRCDIR([src/smaSHeM.h])
 
 # Checks for programs.
@@ -19,6 +19,8 @@ AC_ARG_WITH([qtgui], AS_HELP_STRING([--with-qtgui], [Build with QtGui for image 
 if test "x$with_qtgui" = "xyes"; then
   PKG_CHECK_MODULES([QTGUI], [QtGui])
   CPPFLAGS="$CPPFLAGS $QTGUI_CFLAGS"
+  LIBS="$CPPFLAGS $QTGUI_LIBS"
+  AC_DEFINE([WITH_QTGUI], 1, [image dumping enabled])
 fi
 
 # Checks for libraries.
