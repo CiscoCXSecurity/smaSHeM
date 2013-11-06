@@ -27,7 +27,7 @@ fi
 AC_CHECK_HEADERS([stdio.h stdlib.h errno.h unistd.h stdlib.h string.h sys/types.h sys/shm.h ctype.h],, AC_MSG_ERROR([required header file missing]))
 if test "x$with_qtgui" = "xyes"; then
   # waitpid is only useful if we have QtGui
-  AC_CHECK_HEADERS([QtGui/qimage.h sys/wait.h],, AC_MSG_ERROR([optional, but requested header file missing]))
+  AC_CHECK_HEADERS([QtGui/qimage.h sys/wait.h],, AC_MSG_ERROR([optional but requested header file missing]))
 fi
 
 # Checks for typedefs, structures, and compiler characteristics.
