@@ -11,6 +11,7 @@
 * Added man/Makefile.in
 * Added config.h.in
 * Added -v option to smaSHeM.c to display version and updated man/smaSHeM.1 man
+  page to reflect this
 
 0.1 - 0.2
 

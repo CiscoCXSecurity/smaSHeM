@@ -26,7 +26,7 @@ fi
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdio.h errno.h string.h sys/shm.h ctype.h],, AC_MSG_ERROR([required header file missing]))
+AC_CHECK_HEADERS([stdio.h errno.h sys/shm.h ctype.h],, AC_MSG_ERROR([required header file missing]))
 if test "x$with_qtgui" = "xyes"; then
   # waitpid is only useful if we have QtGui
   AC_CHECK_HEADERS([QtGui/qimage.h sys/wait.h],, AC_MSG_ERROR([optional but requested header file missing]))
