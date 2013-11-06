@@ -41,5 +41,5 @@ if test "x$with_qtgui" = "xyes"; then
   AC_CHECK_FUNCS([malloc memset sprintf free],, AC_MSG_ERROR([optional but requested standard library function missing]))
 fi
 
-AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile man/Makefile])
 AC_OUTPUT
