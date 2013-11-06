@@ -1,0 +1,119 @@
+.\" to process use the following command
+.\" groff -man -Tascii manpagename.1
+.TH SMASHEM 1 "6 November 2013"
+.SH NAME
+smaSHeM \- a System V shared memory segment manipulator
+.SH SYNOPSIS
+.B smaSHeM
+-i
+<
+.I shmemid
+>
+-l
+<
+.I shmemlength
+>
+<
+-@
+<
+.I patchoffset
+>
+-s
+<
+patchstring
+>
+|
+-d
+[
+-p
+|
+-c
+|
+-P
+|
+-j
+-x
+<
+xstart
+>
+-X
+<
+endx
+>
+-y
+<
+starty
+>
+-Y
+<
+yend
+>
+]
+>
+.SH DESCRIPTION
+.B smaSHeM
+is a System V shared memory segment manipulator.
+.SH OPTIONS
+.TP 15
+.I shmemid
+Specifies the segment identifier.
+.TP 15
+.I shmemlength
+Specifies the length of the segment.
+.TP 15
+.I patchoffset
+Specifies the start of the patch.
+.TP 15
+.I patchstring
+Specifies the string to patch in.
+.TP 15
+.I -d
+Specifies that the segment should be displayed. On it's own, it will lead to a
+raw memory dump being performed.
+.TP 15
+.I -p
+Specifies that the segment should be displayed as a
+.B Perl
+string.
+.TP 15
+.I -c
+Specifies that the segment should be displayed as a
+.B C
+string.
+.TP 15
+.I -P
+Specifies that the segment should be displayed prettily.
+.TP 15
+.I -j
+Specified that the segment should be image dumped. As we are looking at raw memory,
+this involves brute forcing the x and y dimensions.
+.br
+By default, 
+.B smaSHeM
+will fix the y dimension at 30 pixels and try 0 through 2000 as valid x values.
+You can however change this as follows:
+.TP 15
+.B -x
+Specifies the minimum x dimension.
+.TP 15
+.B -X
+Specifies the maximum x dimension.
+.TP 15
+.B -y
+Specifies the minimum y dimension.
+.TP 15
+.B -Y
+Specifies the maximum y dimension.
+.br
+When dumping images, files will be written out as JPEGs to the current working
+directory in the form x-y.jpeg.
+.SH AUTHOR
+Written by Tim Brown <mailto:timb@nth-dimension.org.uk>.
+.SH "REPORTING BUGS"
+Report bugs to Tim Brown <mailto:timb@nth-dimension.org.uk>.
+.SH COPYRIGHT
+Copyright \(co Tim Brown, 2013.
+.br
+This is free software.  You may redistribute copies of it under the terms of
+the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.
+There is NO WARRANTY, to the extent permitted by law.

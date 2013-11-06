@@ -9,6 +9,7 @@
 * Fixed Makefile
 * Ran autoreconf --force --install
 * Added man/Makefile.in
+* Added config.h.in
 
 0.1 - 0.2
 
