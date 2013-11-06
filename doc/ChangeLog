@@ -1,3 +1,7 @@
+    C++ compiler
+* Cleaned up error messages in configure
+* Fixed header checks
+
 0.1 - 0.2
 
 * Fixed minor bug in distclean target of Makefile

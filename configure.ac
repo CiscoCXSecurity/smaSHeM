@@ -12,7 +12,7 @@ AC_PROG_CC
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdlib.h string.h unistd.h])
+AC_CHECK_HEADERS([stdio.h stdlib.h errno.h unistd.h stdlib.h string.h sys/types.h sys/shm.h ctype.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 
