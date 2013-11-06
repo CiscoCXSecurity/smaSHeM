@@ -1,6 +1,10 @@
     C++ compiler
 * Cleaned up error messages in configure
 * Fixed header checks
+* Added image dumping support
+* Added new pkg-config and header checks
+* Added man/smaSHeM.1 man page
+* Fixed Makefile generation in configure
 
 0.1 - 0.2
 
