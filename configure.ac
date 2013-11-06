@@ -33,7 +33,11 @@ fi
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
-AC_FUNC_ERROR_AT_LINE
+AC_CHECK_FUNCS([fprintf exit perror getopt shmat shmdt printf],, AC_MSG_ERROR([required standard library function missing]))
+if test "x$with_qtgui" = "xyes"; then
+  # only useful if we have QtGui
+  AC_CHECK_FUNCS([malloc memset sprintf free],, AC_MSG_ERROR([optional but requested standard library function missing]))
+fi
 
 AC_CONFIG_FILES([Makefile src/Makefile doc/Makefile])
 AC_OUTPUT
