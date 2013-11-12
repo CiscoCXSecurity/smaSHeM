@@ -1,5 +1,5 @@
 /*
-$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.3 2013-11-12 01:51:35 timb Exp $
+$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.4 2013-11-12 02:25:55 timb Exp $
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-(c) Tim Brown, 2012
+(c) Tim Brown, 2013
 <mailto:timb@nth-dimension.org.uk>
 <http://www.nth-dimension.org.uk/> / <http://www.machine.org.uk/>
 */
@@ -152,7 +152,7 @@ int main(int argc, char **argv) {
 	}
 	if (versionflag == TRUE) {
 		printf("%s\n", PACKAGE_STRING);
-		printf("(c) Tim Brown, 2012\n");
+		printf("(c) Tim Brown, 2013\n");
 		printf("<mailto:timb@nth-dimension.org.uk>\n");
 		printf("<http://www.nth-dimension.org.uk/> / <http://www.machine.org.uk/>\n");
 		exit(EXIT_SUCCESS);

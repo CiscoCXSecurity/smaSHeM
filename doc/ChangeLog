@@ -2,6 +2,7 @@
 
 * Fixed header checks in configure
 * Updated missing
+* Added new pkg-config and header checks to configure
   * This included moving smaSHeM.c to smaSHeM.cpp to force compilation using
     C++ compiler
 * Cleaned up error messages in configure
