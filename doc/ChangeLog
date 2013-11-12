@@ -15,7 +15,8 @@
 * Fixed copyright dates on src/smaSHeM.{cpp,h}
 
 0.2 - 0.3
-* Added config.in
+
+* Ported to automake
 
 0.1 - 0.2
 
