@@ -3,6 +3,7 @@
 
 AC_PREREQ([2.69])
 AC_INIT([smaSHeM], [0.3.9], [timb@nth-dimension.org.uk])
+AC_CONFIG_HEADERS([config.h:config.in])
 AC_CONFIG_SRCDIR([src/smaSHeM.h])
 AM_INIT_AUTOMAKE
 
