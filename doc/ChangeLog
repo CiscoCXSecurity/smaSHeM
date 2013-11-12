@@ -1,3 +1,8 @@
+0.3 - 0.4
+
+* Fixed header checks in configure
+* Updated missing
+  * This included moving smaSHeM.c to smaSHeM.cpp to force compilation using
     C++ compiler
 * Cleaned up error messages in configure
 * Added function checks in configure

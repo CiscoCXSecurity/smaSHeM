@@ -1,5 +1,5 @@
 /*
-$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.2 2013-11-06 15:18:13 timb Exp $
+$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.3 2013-11-12 01:51:35 timb Exp $
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 void usage(char *commandname) {
 	if (commandname != (char *) NULL) {
-		fprintf(stderr, "usage: %s -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P | -j -x <xstart> -X <endx> -y <starty> -Y <yend>]>\n", commandname);
+		fprintf(stderr, "usage: %s -v | -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P | -j -x <xstart> -X <endx> -y <starty> -Y <yend>]>\n", commandname);
 	} else {
-		fprintf(stderr, "usage: (null) -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P | -j -x <xstart> -X <endx> -y <starty> -Y <yend>]>\n");
+		fprintf(stderr, "usage: (null) -v | -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P | -j -x <xstart> -X <endx> -y <starty> -Y <yend>]>\n");
 	}
 	exit(EXIT_FAILURE);
 }
@@ -48,6 +48,7 @@ void error(char *commandname, char *errorstring) {
 
 int main(int argc, char **argv) {
 	int optionflag;
+	int versionflag;
 	int shmemid;
 	int shmemlength;
 	int patchoffset;
@@ -74,6 +75,7 @@ int main(int argc, char **argv) {
 #endif
 	char *filename;
 	optionflag = -1;
+	versionflag = FALSE;
 	shmemid = -1;
 	shmemlength = 0;
 	patchoffset = 0;
@@ -99,8 +101,11 @@ int main(int argc, char **argv) {
 	qimage = NULL;
 #endif
 	filename = (char *) NULL;
-	while ((optionflag = getopt(argc, argv, "i:l:@:s:dpcPjx:X:y:Y:")) != -1) {
+	while ((optionflag = getopt(argc, argv, "vi:l:@:s:dpcPjx:X:y:Y:")) != -1) {
 		switch (optionflag) {
+			case 'v':
+				versionflag = TRUE;
+				break;
 			case 'i':
 				shmemid = atoi(optarg);
 				break;
@@ -145,105 +150,113 @@ int main(int argc, char **argv) {
 				break;
 		}
 	}
-	if (shmemid >= 0) {
-		if (shmemlength >= 0) {
-			if ((patchoffset >=0) && (patchstring != (char *) NULL)) {
-				if ((patchoffset + strlen(patchstring)) <= shmemlength) {
-					if ((shmembuffer = (void *) shmat(shmemid, (void *) NULL, SHM_RND)) != (void *) -1) {
-						if (patchstring != (char *) NULL) {
-							for (patchcounter = 0; patchcounter < strlen(patchstring); patchcounter ++) {
-								*((char *) (shmembuffer + patchoffset + patchcounter)) = *(patchstring + patchcounter);
-							}
-						}
-						shmdt(shmembuffer);
-					} else {
-						error(argv[0], "couldn't map shared memory");
-					}
-				} else {
-					error(argv[0], "couldn't patch beyond mapped memory");
-				}
-			} else {
-				if (displayflag == TRUE) {
-					if (shmemlength >= 0) { 
-						if ((shmembuffer = (void *) shmat(shmemid, (void *) NULL, SHM_RND | SHM_RDONLY)) != (void *) -1) {
-							if (jpegflag != TRUE) {
-								for (displaycounter = 0; displaycounter < shmemlength; displaycounter ++) {
-									if (perlflag == TRUE) {
-										printf("\\x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
-									} else {
-										if (cflag == TRUE) {
-											printf("0x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
-											if ((displaycounter + 1) < shmemlength) {
-												printf(",");
-											}
-										} else {
-											if (prettyflag == TRUE) {
-												if ((displaycounter % PRETTYLINELENGTH) == 0) {
-													printf("0x%08x\t", shmembuffer + displaycounter);
-												}
-												if ((displaycounter % PRETTYLINELENGTH) > 0) {
-													printf(" ");
-												}
-												if (isalnum((unsigned char) *((char *) (shmembuffer + displaycounter)))) {
-													prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) (shmembuffer + displaycounter));
-												} else {
-													prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) '.';
-												}
-												printf("%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
-												if ((displaycounter % PRETTYLINELENGTH) == (PRETTYLINELENGTH - 1)) {
-													printf("\t%s\n", prettybuffer);
-												}
-											} else {
-												printf("%c", (unsigned char) *((char *) (shmembuffer + displaycounter)));
-											}
-										}
-									}
+	if (versionflag == TRUE) {
+		printf("%s\n", PACKAGE_STRING);
+		printf("(c) Tim Brown, 2012\n");
+		printf("<mailto:timb@nth-dimension.org.uk>\n");
+		printf("<http://www.nth-dimension.org.uk/> / <http://www.machine.org.uk/>\n");
+		exit(EXIT_SUCCESS);
+	} else {
+		if (shmemid >= 0) {
+			if (shmemlength >= 0) {
+				if ((patchoffset >=0) && (patchstring != (char *) NULL)) {
+					if ((patchoffset + strlen(patchstring)) <= shmemlength) {
+						if ((shmembuffer = (void *) shmat(shmemid, (void *) NULL, SHM_RND)) != (void *) -1) {
+							if (patchstring != (char *) NULL) {
+								for (patchcounter = 0; patchcounter < strlen(patchstring); patchcounter ++) {
+									*((char *) (shmembuffer + patchoffset + patchcounter)) = *(patchstring + patchcounter);
 								}
-							} else {
-#ifdef WITH_QTGUI
-								if ((xend >= xstart) && (yend >= ystart)) {
-									for (xcounter = xstart; xcounter <= xend; xcounter ++) {
-										for (ycounter = ystart; ycounter <= yend; ycounter ++) {
-											/* we fork here because we have no idea what the correct dimensions of the image actually are */
-											if (processid = fork() == 0) {
-												printf("%ix%i", xcounter, ycounter);
-												qimage = new QImage((unsigned char *) shmembuffer, xcounter, ycounter, QImage::Format_RGB32);
-												filename = (char *) malloc(4 + 1 + 4 + 4 + 1);
-												memset(filename, 0, 4 + 1 + 4 + 4 + 1);
-												sprintf(filename, "%i-%i.jpeg", xcounter, ycounter);
-												qimage->save(filename, 0, 100);
-												free(filename);
-												delete qimage;
-												printf(" [done]\n");
-												exit(EXIT_SUCCESS);
-											} else {
-												waitpid(processid, &processstatus, 0);
-											}
-										}
-									}
-								} else {
-									error(argv[0], "dimensions make no sense");
-								}
-#else
-								error(argv[0], "not compiled with --enable-qtgui");
-#endif
 							}
 							shmdt(shmembuffer);
 						} else {
 							error(argv[0], "couldn't map shared memory");
 						}
 					} else {
-						error(argv[0], "invalid shared memory length");
+						error(argv[0], "couldn't patch beyond mapped memory");
 					}
 				} else {
-					error(argv[0], "invalid patch string and display flag not set");
+					if (displayflag == TRUE) {
+						if (shmemlength >= 0) { 
+							if ((shmembuffer = (void *) shmat(shmemid, (void *) NULL, SHM_RND | SHM_RDONLY)) != (void *) -1) {
+								if (jpegflag != TRUE) {
+									for (displaycounter = 0; displaycounter < shmemlength; displaycounter ++) {
+										if (perlflag == TRUE) {
+											printf("\\x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+										} else {
+											if (cflag == TRUE) {
+												printf("0x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+												if ((displaycounter + 1) < shmemlength) {
+													printf(",");
+												}
+											} else {
+												if (prettyflag == TRUE) {
+													if ((displaycounter % PRETTYLINELENGTH) == 0) {
+														printf("0x%08x\t", shmembuffer + displaycounter);
+													}
+													if ((displaycounter % PRETTYLINELENGTH) > 0) {
+														printf(" ");
+													}
+													if (isalnum((unsigned char) *((char *) (shmembuffer + displaycounter)))) {
+														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) (shmembuffer + displaycounter));
+													} else {
+														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) '.';
+													}
+													printf("%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+													if ((displaycounter % PRETTYLINELENGTH) == (PRETTYLINELENGTH - 1)) {
+														printf("\t%s\n", prettybuffer);
+													}
+												} else {
+													printf("%c", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+												}
+											}
+										}
+									}
+								} else {
+#ifdef WITH_QTGUI
+									if ((xend >= xstart) && (yend >= ystart)) {
+										for (xcounter = xstart; xcounter <= xend; xcounter ++) {
+											for (ycounter = ystart; ycounter <= yend; ycounter ++) {
+												/* we fork here because we have no idea what the correct dimensions of the image actually are */
+												if (processid = fork() == 0) {
+													printf("%ix%i", xcounter, ycounter);
+													qimage = new QImage((unsigned char *) shmembuffer, xcounter, ycounter, QImage::Format_RGB32);
+													filename = (char *) malloc(4 + 1 + 4 + 4 + 1);
+													memset(filename, 0, 4 + 1 + 4 + 4 + 1);
+													sprintf(filename, "%i-%i.jpeg", xcounter, ycounter);
+													qimage->save(filename, 0, 100);
+													free(filename);
+													delete qimage;
+													printf(" [done]\n");
+													exit(EXIT_SUCCESS);
+												} else {
+													waitpid(processid, &processstatus, 0);
+												}
+											}
+										}
+									} else {
+										error(argv[0], "dimensions make no sense");
+									}
+#else
+									error(argv[0], "not compiled with --enable-qtgui");
+#endif
+								}
+								shmdt(shmembuffer);
+							} else {
+								error(argv[0], "couldn't map shared memory");
+							}
+						} else {
+							error(argv[0], "invalid shared memory length");
+						}
+					} else {
+						error(argv[0], "invalid patch string and display flag not set");
+					}
 				}
+			} else {
+				error(argv[0], "invalid shared memory length");
 			}
 		} else {
-			error(argv[0], "invalid shared memory length");
+			error(argv[0], "invalid shared memory ID");
 		}
-	} else {
-		error(argv[0], "invalid shared memory ID");
 	}
 	exit(EXIT_SUCCESS);
 }
