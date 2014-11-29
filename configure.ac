@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([smaSHeM], [0.4], [timb@nth-dimension.org.uk])
+AC_INIT([smaSHeM], [0.5], [timb@nth-dimension.org.uk])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([src/smaSHeM.h])
 AM_INIT_AUTOMAKE
@@ -27,7 +27,7 @@ fi
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([stdio.h errno.h sys/shm.h ctype.h],, AC_MSG_ERROR([required header file missing]))
+AC_CHECK_HEADERS([stdio.h stdlib.h errno.h unistd.h string.h sys/shm.h ctype.h],, AC_MSG_ERROR([required header file missing]))
 if test "x$with_qtgui" = "xyes"; then
   # waitpid is only useful if we have QtGui
   AC_CHECK_HEADERS([QtGui/qimage.h sys/wait.h],, AC_MSG_ERROR([optional but requested header file missing]))

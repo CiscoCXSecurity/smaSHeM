@@ -11,6 +11,7 @@ From cppcheck:
 
 * Made fork check unambiguous
 * Removed unnecessary memset
+* Cleaned up configure.ac
 
 0.3 - 0.4
 
