@@ -3,6 +3,9 @@
 /* Define to 1 if you have the `atoi' function. */
 #undef HAVE_ATOI
 
+/* Define to 1 if you have the `calloc' function. */
+#undef HAVE_CALLOC
+
 /* Define to 1 if you have the <ctype.h> header file. */
 #undef HAVE_CTYPE_H
 
@@ -24,14 +27,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `malloc' function. */
-#undef HAVE_MALLOC
-
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* Define to 1 if you have the `memset' function. */
-#undef HAVE_MEMSET
 
 /* Define to 1 if you have the `perror' function. */
 #undef HAVE_PERROR

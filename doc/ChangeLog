@@ -1,3 +1,17 @@
+0.4 - 0.5
+
+* Replaced calls to malloc with calloc
+
+From http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/security/smaSHeM/patches/patch-src_smaSHeM.cpp:
+
+* const'ified function parameters
+* Cleaned up void * arithmetic
+
+From cppcheck:
+
+* Made fork check unambiguous
+* Removed unnecessary memset
+
 0.3 - 0.4
 
 * Fixed header checks in configure

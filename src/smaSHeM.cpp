@@ -1,5 +1,5 @@
 /*
-$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.4 2013-11-12 02:25:55 timb Exp $
+$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.5 2014-11-29 19:01:18 timb Exp $
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "smaSHeM.h"
 
-void usage(char *commandname) {
+void usage(const char *commandname) {
 	if (commandname != (char *) NULL) {
 		fprintf(stderr, "usage: %s -v | -i <shmemid> -l <shmemlength> <-@ <patchoffset> -s <patchstring> | -d [-p | -c | -P | -j -x <xstart> -X <endx> -y <starty> -Y <yend>]>\n", commandname);
 	} else {
@@ -31,7 +31,7 @@ void usage(char *commandname) {
 	exit(EXIT_FAILURE);
 }
 
-void error(char *commandname, char *errorstring) {
+void error(const char *commandname, const char *errorstring) {
 	if (errno) {
 		if (errorstring != (char *) NULL) {
 			perror(errorstring);
@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
 						if ((shmembuffer = (void *) shmat(shmemid, (void *) NULL, SHM_RND)) != (void *) -1) {
 							if (patchstring != (char *) NULL) {
 								for (patchcounter = 0; patchcounter < strlen(patchstring); patchcounter ++) {
-									*((char *) (shmembuffer + patchoffset + patchcounter)) = *(patchstring + patchcounter);
+									*((char *) shmembuffer + patchoffset + patchcounter) = *(patchstring + patchcounter);
 								}
 							}
 							shmdt(shmembuffer);
@@ -181,10 +181,10 @@ int main(int argc, char **argv) {
 								if (jpegflag != TRUE) {
 									for (displaycounter = 0; displaycounter < shmemlength; displaycounter ++) {
 										if (perlflag == TRUE) {
-											printf("\\x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+											printf("\\x%02x", (unsigned char) *((char *) shmembuffer + displaycounter));
 										} else {
 											if (cflag == TRUE) {
-												printf("0x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+												printf("0x%02x", (unsigned char) *((char *) shmembuffer + displaycounter));
 												if ((displaycounter + 1) < shmemlength) {
 													printf(",");
 												}
@@ -196,8 +196,8 @@ int main(int argc, char **argv) {
 													if ((displaycounter % PRETTYLINELENGTH) > 0) {
 														printf(" ");
 													}
-													if (isalnum((unsigned char) *((char *) (shmembuffer + displaycounter)))) {
-														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) (shmembuffer + displaycounter));
+													if (isalnum((unsigned char) *((char *) shmembuffer + displaycounter))) {
+														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) shmembuffer + displaycounter);
 													} else {
 														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) '.';
 													}
@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
 														printf("\t%s\n", prettybuffer);
 													}
 												} else {
-													printf("%c", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+													printf("%c", (unsigned char) *((char *) shmembuffer + displaycounter));
 												}
 											}
 										}
@@ -217,11 +217,11 @@ int main(int argc, char **argv) {
 										for (xcounter = xstart; xcounter <= xend; xcounter ++) {
 											for (ycounter = ystart; ycounter <= yend; ycounter ++) {
 												/* we fork here because we have no idea what the correct dimensions of the image actually are */
-												if (processid = fork() == 0) {
+												processid = fork();
+												if (processid == 0) {
 													printf("%ix%i", xcounter, ycounter);
 													qimage = new QImage((unsigned char *) shmembuffer, xcounter, ycounter, QImage::Format_RGB32);
-													filename = (char *) malloc(4 + 1 + 4 + 4 + 1);
-													memset(filename, 0, 4 + 1 + 4 + 4 + 1);
+													filename = (char *) calloc(4 + 1 + 4 + 4 + 1, sizeof(char));
 													sprintf(filename, "%i-%i.jpeg", xcounter, ycounter);
 													qimage->save(filename, 0, 100);
 													free(filename);
