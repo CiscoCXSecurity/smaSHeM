@@ -1,5 +1,5 @@
 /*
-$Header: /var/lib/cvsd/var/lib/cvsd/smaSHeM/src/smaSHeM.cpp,v 1.5 2014-11-29 19:01:18 timb Exp $
+$Revision$
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -1,3 +1,7 @@
+0-4 - 0.6
+
+* Setting svn:keywords
+
 0.4 - 0.5
 
 * Replaced calls to malloc with calloc
