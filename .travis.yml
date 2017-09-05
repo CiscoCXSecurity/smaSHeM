@@ -6,6 +6,6 @@ compiler:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y pkg-config libqt4-dev
+  - sudo apt-get install -y automake pkg-config libqt4-dev
 
 script: ./configure && make
