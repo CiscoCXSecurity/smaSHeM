@@ -181,10 +181,10 @@ int main(int argc, char **argv) {
 								if (jpegflag != TRUE) {
 									for (displaycounter = 0; displaycounter < shmemlength; displaycounter ++) {
 										if (perlflag == TRUE) {
-											printf("\\x%02x", (char) *((char *) (shmembuffer + displaycounter)));
+											printf("\\x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
 										} else {
 											if (cflag == TRUE) {
-												printf("0x%02x", (char) *((char *) (shmembuffer + displaycounter)));
+												printf("0x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
 												if ((displaycounter + 1) < shmemlength) {
 													printf(",");
 												}
@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
 													} else {
 														prettybuffer[displaycounter % PRETTYLINELENGTH] = (char) '.';
 													}
-													printf("%02x", (char) *((char *) (shmembuffer + displaycounter)));
+													printf("%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
 													if ((displaycounter % PRETTYLINELENGTH) == (PRETTYLINELENGTH - 1)) {
 														printf("\t%s\n", prettybuffer);
 													}
