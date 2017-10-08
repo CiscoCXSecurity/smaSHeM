@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
 						if ((shmembuffer = (void *) shmat(shmemid, (void *) NULL, SHM_RND)) != (void *) -1) {
 							if (patchstring != (char *) NULL) {
 								for (patchcounter = 0; patchcounter < strlen(patchstring); patchcounter ++) {
-									*((char *) (shmembuffer + patchoffset + patchcounter)) = *((char*) (patchstring + patchcounter));
+									*((char *) (shmembuffer + patchoffset + patchcounter)) = *((char *) (patchstring + patchcounter));
 								}
 							}
 							shmdt(shmembuffer);
