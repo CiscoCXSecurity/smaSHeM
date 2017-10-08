@@ -181,10 +181,10 @@ int main(int argc, char **argv) {
 								if (jpegflag != TRUE) {
 									for (displaycounter = 0; displaycounter < shmemlength; displaycounter ++) {
 										if (perlflag == TRUE) {
-											printf("\\x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+											printf("\\x%02x", (char) *((char *) (shmembuffer + displaycounter)));
 										} else {
 											if (cflag == TRUE) {
-												printf("0x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+												printf("0x%02x", (char) *((char *) (shmembuffer + displaycounter)));
 												if ((displaycounter + 1) < shmemlength) {
 													printf(",");
 												}
@@ -196,17 +196,17 @@ int main(int argc, char **argv) {
 													if ((displaycounter % PRETTYLINELENGTH) > 0) {
 														printf(" ");
 													}
-													if (isalnum((unsigned char) *((char *) (shmembuffer + displaycounter)))) {
-														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) (shmembuffer + displaycounter));
+													if (isalnum((char) *((char *) (shmembuffer + displaycounter)))) {
+														prettybuffer[displaycounter % PRETTYLINELENGTH] = (char) *((char *) (shmembuffer + displaycounter));
 													} else {
-														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) '.';
+														prettybuffer[displaycounter % PRETTYLINELENGTH] = (char) '.';
 													}
-													printf("%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+													printf("%02x", (char) *((char *) (shmembuffer + displaycounter)));
 													if ((displaycounter % PRETTYLINELENGTH) == (PRETTYLINELENGTH - 1)) {
 														printf("\t%s\n", prettybuffer);
 													}
 												} else {
-													printf("%c", (unsigned char) *((char *) (shmembuffer + displaycounter)));
+													printf("%c", (char) *((char *) (shmembuffer + displaycounter)));
 												}
 											}
 										}
@@ -220,7 +220,7 @@ int main(int argc, char **argv) {
 												processid = fork();
 												if (processid == 0) {
 													printf("%ix%i", xcounter, ycounter);
-													qimage = new QImage((unsigned char *) shmembuffer, xcounter, ycounter, QImage::Format_RGB32);
+													qimage = new QImage((char *) shmembuffer, xcounter, ycounter, QImage::Format_RGB32);
 													filename = (char *) calloc(4 + 1 + 4 + 4 + 1, sizeof(char));
 													sprintf(filename, "%i-%i.jpeg", xcounter, ycounter);
 													qimage->save(filename, 0, 100);
