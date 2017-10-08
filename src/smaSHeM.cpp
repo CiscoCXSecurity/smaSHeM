@@ -159,12 +159,12 @@ int main(int argc, char **argv) {
 	} else {
 		if (shmemid >= 0) {
 			if (shmemlength >= 0) {
-				if ((patchoffset >=0) && (patchstring != (char *) NULL)) {
+				if ((patchoffset >= 0) && (patchstring != (char *) NULL)) {
 					if ((patchoffset + strlen(patchstring)) <= shmemlength) {
 						if ((shmembuffer = (void *) shmat(shmemid, (void *) NULL, SHM_RND)) != (void *) -1) {
 							if (patchstring != (char *) NULL) {
 								for (patchcounter = 0; patchcounter < strlen(patchstring); patchcounter ++) {
-									*((char *) shmembuffer + patchoffset + patchcounter) = *(patchstring + patchcounter);
+									*((char *) (shmembuffer + patchoffset + patchcounter)) = *((char*) (patchstring + patchcounter));
 								}
 							}
 							shmdt(shmembuffer);
@@ -181,10 +181,10 @@ int main(int argc, char **argv) {
 								if (jpegflag != TRUE) {
 									for (displaycounter = 0; displaycounter < shmemlength; displaycounter ++) {
 										if (perlflag == TRUE) {
-											printf("\\x%02x", (unsigned char) *((char *) shmembuffer + displaycounter));
+											printf("\\x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
 										} else {
 											if (cflag == TRUE) {
-												printf("0x%02x", (unsigned char) *((char *) shmembuffer + displaycounter));
+												printf("0x%02x", (unsigned char) *((char *) (shmembuffer + displaycounter)));
 												if ((displaycounter + 1) < shmemlength) {
 													printf(",");
 												}
@@ -196,8 +196,8 @@ int main(int argc, char **argv) {
 													if ((displaycounter % PRETTYLINELENGTH) > 0) {
 														printf(" ");
 													}
-													if (isalnum((unsigned char) *((char *) shmembuffer + displaycounter))) {
-														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) shmembuffer + displaycounter);
+													if (isalnum((unsigned char) *((char *) (shmembuffer + displaycounter)))) {
+														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) *((char *) (shmembuffer + displaycounter));
 													} else {
 														prettybuffer[displaycounter % PRETTYLINELENGTH] = (unsigned char) '.';
 													}
@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
 														printf("\t%s\n", prettybuffer);
 													}
 												} else {
-													printf("%c", (unsigned char) *((char *) shmembuffer + displaycounter));
+													printf("%c", (unsigned char) *((char *) (shmembuffer + displaycounter)));
 												}
 											}
 										}

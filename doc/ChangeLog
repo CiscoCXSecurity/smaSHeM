@@ -2,6 +2,8 @@
 
 * Setting svn:keywords
 * Added doc/AUTHORS
+* Added .travis.yml for CI
+* Cleaned up char * arithmetic
 
 0.4 - 0.5
 
