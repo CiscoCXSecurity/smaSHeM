@@ -1,9 +1,12 @@
+0.6 - 0.7
+
+* Added .travis.yml for CI
+* Cleaned up char * arithmetic
+
 0-5 - 0.6
 
 * Setting svn:keywords
 * Added doc/AUTHORS
-* Added .travis.yml for CI
-* Cleaned up char * arithmetic
 
 0.4 - 0.5
 
